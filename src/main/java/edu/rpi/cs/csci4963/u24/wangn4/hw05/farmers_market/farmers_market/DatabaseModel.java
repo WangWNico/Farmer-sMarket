@@ -297,4 +297,30 @@ public class DatabaseModel {
             System.out.println("Failed to parse CSV properly: " + e.getMessage());
         }
     }
+
+    public ResultSet searchMarkets(String query) {
+        String sql = "SELECT MarketName FROM farmers_market WHERE city LIKE ? OR State LIKE ? OR zip LIKE ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, "%" + query + "%");
+            preparedStatement.setString(2, "%" + query + "%");
+            preparedStatement.setString(3, "%" + query + "%");
+            return preparedStatement.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public ResultSet getMarketDetails(String marketName) {
+        String sql = "SELECT * FROM farmers_market WHERE MarketName = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, marketName);
+            return preparedStatement.executeQuery();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

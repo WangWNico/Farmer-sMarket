@@ -7,10 +7,12 @@
 <?import java.lang.String?>
 <?import java.lang.Integer?>
 <VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.rpi.cs.csci4963.u24.wangn4.hw05.farmers_market.farmers_market.FarmersMarketController">
+    <VBox fx:id="loadingScreen" alignment="CENTER" spacing="10" visible="false">
+        <Label text="Loading data, please wait..." />
+        <ProgressIndicator />
+    </VBox>
     <HBox>
-        <TextField fx:id="cityField" promptText="City" />
-        <TextField fx:id="stateField" promptText="State" />
-        <TextField fx:id="zipField" promptText="ZIP Code" />
+        <TextField fx:id="locationField" prefWidth="400" promptText="Search by Location (City, State, or Zip code)" />
         <ComboBox fx:id="distanceComboBox">
             <items>
                 <FXCollections fx:factory="observableArrayList">
@@ -20,15 +22,19 @@
                 </FXCollections>
             </items>
         </ComboBox>
-        <Button text="Search" onAction="#onSearchButtonClick" />
+        <Button text="Search" onAction="#onSearchButtonClick" style="-fx-background-color: green; -fx-text-fill: white;" />
     </HBox>
-    <VBox fx:id="loadingScreen" alignment="CENTER" spacing="10" visible="false">
-        <Label text="Loading data, please wait..." />
-        <ProgressIndicator />
-    </VBox>
-    <ScrollPane>
-        <ListView fx:id="marketListView" onMouseClicked="#onMarketSelected" />
-    </ScrollPane>
+    <HBox>
+        <ScrollPane>
+            <ListView fx:id="marketListView" onMouseClicked="#onMarketSelected" />
+        </ScrollPane>
+        <VBox fx:id="detailedView">
+            <ScrollPane>
+                <Label text="Market Details" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+                <Label fx:id="marketDetailsLabel" wrapText="true" />
+            </ScrollPane>
+        </VBox>
+    </HBox>
     <VBox>
         <TextField fx:id="reviewNameField" promptText="Your Name" />
         <TextArea fx:id="reviewTextField" promptText="Your Review" />
