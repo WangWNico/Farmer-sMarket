@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+<?import java.lang.Integer?>
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="edu.rpi.cs.csci4963.u24.wangn4.hw05.farmers_market.farmers_market.FarmersMarketController">
+    <HBox>
+        <TextField fx:id="cityField" promptText="City" />
+        <TextField fx:id="stateField" promptText="State" />
+        <TextField fx:id="zipField" promptText="ZIP Code" />
+        <ComboBox fx:id="distanceComboBox">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="10 miles" />
+                    <String fx:value="20 miles" />
+                    <String fx:value="30 miles" />
+                </FXCollections>
+            </items>
+        </ComboBox>
+        <Button text="Search" onAction="#onSearchButtonClick" />
+    </HBox>
+    <VBox fx:id="loadingScreen" alignment="CENTER" spacing="10" visible="false">
+        <Label text="Loading data, please wait..." />
+        <ProgressIndicator />
+    </VBox>
+    <ScrollPane>
+        <ListView fx:id="marketListView" onMouseClicked="#onMarketSelected" />
+    </ScrollPane>
+    <VBox>
+        <TextField fx:id="reviewNameField" promptText="Your Name" />
+        <TextArea fx:id="reviewTextField" promptText="Your Review" />
+        <HBox>
+            <ComboBox fx:id="reviewRatingComboBox">
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <Integer fx:value="1" />
+                        <Integer fx:value="2" />
+                        <Integer fx:value="3" />
+                        <Integer fx:value="4" />
+                        <Integer fx:value="5" />
+                    </FXCollections>
+                </items>
+            </ComboBox>
+            <Button text="Submit Review" onAction="#onSubmitReviewButtonClick" />
+        </HBox>
+    </VBox>
+</VBox>
