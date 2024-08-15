@@ -39,12 +39,19 @@ public class FarmersMarketController {
 
     private String selectedMarket;
 
+    /**
+     * Initializes the controller class. This method is automatically called
+     * after the FXML file has been loaded.
+     */
     @FXML
     private void initialize() {
         loadingScreen.visibleProperty().bind(loading);
         loadData();
     }
 
+    /**
+     * Loads all market data in a separate thread and updates the loading state.
+     */
     private void loadData() {
         loading.set(true);
         new Thread(() -> {
@@ -53,10 +60,17 @@ public class FarmersMarketController {
         }).start();
     }
 
+    /**
+     * Initializes the DatabaseModel and loads all markets.
+     */
     private void loadAllMarkets() {
         databaseModel = new DatabaseModel();
     }
 
+    /**
+     * Handles the search button click event. Validates the loading state and
+     * initiates a market search based on the location field input.
+     */
     @FXML
     private void onSearchButtonClick() {
         if(loading.get()) {
@@ -68,15 +82,18 @@ public class FarmersMarketController {
         searchMarkets(location);
     }
 
+    /**
+     * Searches for markets based on the provided query string in a separate thread.
+     *
+     * @param query The query string to search for.
+     */
     private void searchMarkets(String query) {
         new Thread(() -> {
             try {
                 ResultSet resultSet = databaseModel.searchMarkets(query);
                 marketListView.getItems().clear();
                 while (resultSet.next()) {
-                    System.out.println("Found market: " + resultSet.getString("MarketName"));
-                    String marketName = resultSet.getString("MarketName");
-                    marketListView.getItems().add(marketName);
+                    marketListView.getItems().add(resultSet.getString("MarketName"));
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -85,6 +102,10 @@ public class FarmersMarketController {
         }).start();
     }
 
+    /**
+     * Handles the market selection event. Validates the loading state and
+     * loads the details of the selected market.
+     */
     @FXML
     private void onMarketSelected() {
         if (loading.get()) {
@@ -97,6 +118,11 @@ public class FarmersMarketController {
         }
     }
 
+    /**
+     * Loads the details of the specified market in a separate thread and updates the UI.
+     *
+     * @param marketName The name of the market to load details for.
+     */
     private void loadMarketDetails(String marketName) {
         new Thread(() -> {
             try {
@@ -157,16 +183,34 @@ public class FarmersMarketController {
         }).start();
     }
 
+    /**
+     * Appends a label and value to the details StringBuilder if the value is not empty.
+     *
+     * @param details The StringBuilder to append to.
+     * @param label The label to prepend to the value.
+     * @param value The value to append if not empty.
+     */
     private void appendIfNotEmpty(StringBuilder details, String label, String value) {
         if (value != null && !value.isEmpty()) {
             details.append(label).append(value).append("\n");
         }
     }
 
+    /**
+     * Appends a label and boolean value to the details StringBuilder.
+     *
+     * @param details The StringBuilder to append to.
+     * @param label The label to prepend to the value.
+     * @param value The boolean value to append.
+     */
     private void appendIfNotEmpty(StringBuilder details, String label, boolean value) {
         details.append(label).append(value ? "Yes" : "No").append("\n");
     }
 
+    /**
+     * Handles the submit review button click event. Validates the loading state and
+     * retrieves the review details from the input fields.
+     */
     @FXML
     private void onSubmitReviewButtonClick() {
         if(loading.get()) {

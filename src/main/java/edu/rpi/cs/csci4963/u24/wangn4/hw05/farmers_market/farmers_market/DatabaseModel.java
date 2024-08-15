@@ -15,14 +15,28 @@ import com.opencsv.exceptions.CsvValidationException;
 
 import static java.lang.Double.*;
 
+/**
+ * The DatabaseModel class handles the connection to the database and the operations related to
+ * generating tables and querying data.
+ */
 public class DatabaseModel {
 
     private Connection connection;
 
+    /**
+     * Escapes single quotes in a SQL string to prevent SQL injection.
+     *
+     * @param value The string to escape.
+     * @return The escaped string.
+     */
     private static String escapeSQL(String value) {
         return value.replace("'", "''");
     }
 
+    /**
+     * Constructs a DatabaseModel object and establishes a connection to the database.
+     * It also generates the necessary tables.
+     */
     public DatabaseModel() {
         try {
             Properties properties = new Properties();
@@ -41,6 +55,9 @@ public class DatabaseModel {
         }
     }
 
+    /**
+     * Generates the necessary tables in the database.
+     */
     public void generateTables() {
         try {
             System.out.println("Generating tables");
@@ -54,6 +71,11 @@ public class DatabaseModel {
         }
     }
 
+    /**
+     * Generates the zip_codes table and populates it with data from a CSV file.
+     *
+     * @throws Exception If an error occurs while generating the table or reading the CSV file.
+     */
     private void generateTableZipCodes() throws Exception {
         URL url = this.getClass().getResource("zip_codes_states.csv");
 
@@ -123,7 +145,6 @@ public class DatabaseModel {
 
                 // flush buffer every 1000 rows
                 if (i % 1000 == 0) {
-                    System.out.println("updating through row " + i);
                     builder.delete(builder.length() - 4, builder.length());
                     builder.append("');");
                     try {
@@ -141,13 +162,17 @@ public class DatabaseModel {
             builder.delete(builder.length() - 4, builder.length());
             builder.append("');");
             connection.createStatement().executeUpdate(builder.toString());
-            System.out.println("loaded zip_codes table with " + i + " rows");
         } catch (IOException e) {
             System.out.println("Failed to read the zip code file");
             throw new Exception("Failed to read the zip code file: " + url);
         }
     }
 
+    /**
+     * Generates the farmers_market table and populates it with data from a CSV file.
+     *
+     * @throws Exception If an error occurs while generating the table or reading the CSV file.
+     */
     private void generateTableFarmersMarket() throws Exception {
         URL url = this.getClass().getResource("Export.csv");
 
@@ -286,7 +311,6 @@ public class DatabaseModel {
             connection.setAutoCommit(false);
             connection.createStatement().executeUpdate(builder.toString());
             connection.commit();
-            System.out.println("generated table farmers market with " + count + " rows");
         } catch (IOException e) {
             e.printStackTrace();
             connection.rollback();
@@ -298,6 +322,12 @@ public class DatabaseModel {
         }
     }
 
+    /**
+     * Searches for markets based on a query string.
+     *
+     * @param query The query string to search for.
+     * @return A ResultSet containing the search results.
+     */
     public ResultSet searchMarkets(String query) {
         String sql = "SELECT MarketName FROM farmers_market WHERE city LIKE ? OR State LIKE ? OR zip LIKE ?";
         try {
@@ -312,6 +342,12 @@ public class DatabaseModel {
         }
     }
 
+    /**
+     * Retrieves the details of a market based on its name.
+     *
+     * @param marketName The name of the market to retrieve details for.
+     * @return A ResultSet containing the market details.
+     */
     public ResultSet getMarketDetails(String marketName) {
         String sql = "SELECT * FROM farmers_market WHERE MarketName = ?";
         try {
